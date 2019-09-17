@@ -1,11 +1,21 @@
 from django.shortcuts import render
 from .models import List
+from .forms import ListForm
 
 # Create your views here.
 
 def home(request):
-    all_item = List.objects.all
-    return render(request ,'home.html', {'all_item':all_item})
+
+    if request.method == 'POST':
+        form = ListForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            all_item = List.objects.all
+            return render(request ,'home.html', {'all_item':all_item})  
+    else:
+
+        all_item = List.objects.all
+        return render(request ,'home.html', {'all_item':all_item})
 
 
 def about(request):
