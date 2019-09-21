@@ -1,10 +1,62 @@
+import datetime
+from django.utils import timezone
 from django.db import models
+from django.contrib.auth.models import User
+
+
+
+
 
 # Create your models here.
 
 class List(models.Model):
     item = models.CharField(max_length=200)
+    global_task_info = models.TextField(max_length=500,default=None) 
     complete = models.BooleanField(default=False)
+    overall_precent_complete = models.PositiveIntegerField(default=0)
+    
+    created_at = models.DateTimeField(default=datetime.datetime.now())
+    updated_at = models.DateTimeField(default=datetime.datetime.now())
+    due_date = models.DateTimeField(default=datetime.datetime.now())
+
+    #populate users choices
+    USERS_CHOICES = []
+    #users = User.objects.all()
+    users = [str(user) for user in User.objects.all()]
+    
+    
+    
+    for userx in users:
+        USERS_CHOICES.append((userx,userx))
+    global_task_assign = models.CharField(max_length=200, choices=USERS_CHOICES,default= True)
+
 
     def __str__(self):
         return self.item
+
+
+
+class ChildTask(models.Model):
+    # Relationship Fields
+    item_main = models.ForeignKey('todo_list.List',on_delete=models.CASCADE, related_name="item_main", )
+    task_description = models.CharField(max_length=200)
+    task_info = models.TextField(blank = True)
+    task_complete = models.BooleanField(default=False)
+    sub_task = models.CharField(max_length=200)
+    task_precent_complete = models.PositiveIntegerField(default=0)
+    task_created = models.DateTimeField(default=datetime.datetime.now())
+    task_updated_at = models.DateTimeField(default=datetime.datetime.now())
+    task_due_date = models.DateTimeField(default=datetime.datetime.now())
+
+
+
+    USERS_CHOICES = []
+    users = User.objects.all()
+    
+    for userx in users :
+        USERS_CHOICES.append((userx,userx))
+    task_assign = models.CharField(max_length=200, choices=USERS_CHOICES, default=User)
+    
+
+    def __str__(self):
+        return self.task_description
