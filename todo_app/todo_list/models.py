@@ -19,16 +19,7 @@ class List(models.Model):
     updated_at = models.DateTimeField(default=datetime.datetime.now())
     due_date = models.DateTimeField(default=datetime.datetime.now())
 
-    #populate users choices
-    USERS_CHOICES = []
-    #users = User.objects.all()
-    users = [str(user) for user in User.objects.all()]
-    
-    
-    
-    for userx in users:
-        USERS_CHOICES.append((userx,userx))
-    global_task_assign = models.CharField(max_length=200, choices=USERS_CHOICES,default= True)
+    global_task_assign = models.ForeignKey('User', on_delete=models.CASCADE, related_name="global_task_assign",default=1)
 
 
     def __str__(self):
@@ -49,13 +40,7 @@ class ChildTask(models.Model):
     task_due_date = models.DateTimeField(default=datetime.datetime.now())
 
 
-
-    USERS_CHOICES = []
-    users = User.objects.all()
-    
-    for userx in users :
-        USERS_CHOICES.append((userx,userx))
-    task_assign = models.CharField(max_length=200, choices=USERS_CHOICES, default=User)
+    task_assign = models.ForeignKey('User', on_delete=models.CASCADE, related_name="task_assign",default=1)
     
 
     def __str__(self):
